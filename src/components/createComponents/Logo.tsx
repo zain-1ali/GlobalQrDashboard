@@ -9,8 +9,9 @@ interface SetLogoProps {
   editQrInfo: (infoValue: string, key: string) => void;
   // swapForColors: () => void;
   // swapIColors: () => void;
-  // handleRoute: (route: string) => void;
+  handleRoute: (route: string) => void;
   qrInfo: {
+    name: string;
     value: string;
     forColor: string;
     iColor: string;
@@ -24,7 +25,7 @@ interface SetLogoProps {
   };
 }
 
-const Logo: React.FC<SetLogoProps> = ({ editQrInfo, qrInfo }) => {
+const Logo: React.FC<SetLogoProps> = ({ editQrInfo, qrInfo, handleRoute }) => {
   console.log(qrInfo);
 
   let [prflimg, setprflimg] = useState<string | undefined>("");
@@ -132,10 +133,16 @@ const Logo: React.FC<SetLogoProps> = ({ editQrInfo, qrInfo }) => {
         </div>
 
         <div className="flex gap-2  justify-end absolute bottom-0 w-[95%]">
-          <button className="h-[50px] w-[136px] outline-none rounded-[14px] bg-[#E2E2E2] text-[#8B8B8B] font-[600] text-[16px]">
+          <button
+            className="h-[50px] w-[136px] outline-none rounded-[14px] bg-[#E2E2E2] text-[#8B8B8B] font-[600] text-[16px]"
+            onClick={() => handleRoute("color")}
+          >
             Cancel
           </button>
-          <button className="h-[50px] w-[136px] outline-none rounded-[14px] bg-[#FE5B24] text-[white] font-[600] text-[16px]">
+          <button
+            className="h-[50px] w-[136px] outline-none rounded-[14px] bg-[#FE5B24] text-[white] font-[600] text-[16px]"
+            onClick={() => handleRoute("custom")}
+          >
             Next
           </button>
         </div>

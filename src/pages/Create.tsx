@@ -15,6 +15,7 @@ import Custom from "../components/createComponents/Custom";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import axios from "axios";
+import ActionModal from "../components/Modals/ActionModal";
 
 const Create = () => {
   const naviget = useNavigate();
@@ -53,6 +54,7 @@ const Create = () => {
   });
 
   let [qrInfo, setQrInfo] = useState<{
+    name: string;
     value: string;
     forColor: string;
     forColor2: string;
@@ -64,6 +66,7 @@ const Create = () => {
     iShape: [number, number, number, number];
     fShape: [number, number, number, number];
   }>({
+    name: "",
     value: "",
     forColor: "#707070",
     forColor2: "#000000",
@@ -120,6 +123,7 @@ const Create = () => {
 
       const singleQrData = response.data?.data;
       setQrInfo({
+        name: singleQrData?.name,
         value: singleQrData?.url,
         forColor: singleQrData?.forColor,
         forColor2: singleQrData?.bgColor,
@@ -193,6 +197,12 @@ const Create = () => {
       backgroundColor: "#d0d0d0",
     },
   }));
+
+  const [actionString, setActionString] = useState<string>("");
+  const [actionModal, setActionModal] = useState<boolean>(false);
+  const handlecloseAction = () => {
+    setActionModal(!actionModal);
+  };
 
   const [quality, setquality] = useState<number>(100);
 
@@ -332,6 +342,7 @@ const Create = () => {
   const createNewQr = async () => {
     const apiFormData = new FormData();
     apiFormData.append("qrId", id ? id : "");
+    apiFormData.append("name", qrInfo.name);
     apiFormData.append("url", qrInfo.value);
     apiFormData.append("forColor", qrInfo.forColor);
     apiFormData.append("forColor2", qrInfo.forColor2);
@@ -368,11 +379,33 @@ const Create = () => {
           },
         });
         console.log(response);
+        setActionString(response?.data?.msg);
+        handlecloseAction();
+        setQrInfo({
+          name: "",
+          value: "",
+          forColor: "#707070",
+          forColor2: "#000000",
+          iColor: "#707070",
+          iColor2: "#000000",
+          bgColor: "#ffffff",
+          logo: "",
+          bShape: "squares",
+          iShape: [0, 0, 0, 0],
+          fShape: [0, 0, 0, 0],
+        });
+        handleRoute("content");
+      } else {
+        setActionString("Url field should not be empty!");
+        handlecloseAction();
       }
     } catch (error) {
       console.error("Error posting data:", error);
     }
   };
+
+  // let uniqueDate = Date;
+  // console.log(uniqueDate.now());
 
   return (
     <div className="h-[100vh] w-[100%]">
@@ -385,7 +418,12 @@ const Create = () => {
           Back
         </div>
       </div>
-
+      <ActionModal
+        handlecloseAction={handlecloseAction}
+        actionModal={actionModal}
+        actionString={actionString}
+        actionMethod={handlecloseAction}
+      />
       <div className="w-[100%] h-[88%] flex justify-center items-center ">
         <div className="w-[95%] h-[88%]  flex justify-between">
           <div className="w-[25%] h-[100%] border-r flex justify-center items-center">
@@ -445,16 +483,32 @@ const Create = () => {
 
           <div className="w-[52%] h-[100%] flex justify-center items-center">
             {navigate?.isContent && (
-              <Content editQrInfo={editQrInfo} qrInfo={qrInfo} />
+              <Content
+                editQrInfo={editQrInfo}
+                qrInfo={qrInfo}
+                handleRoute={handleRoute}
+              />
             )}
             {navigate?.isColor && (
-              <Color editQrInfo={editQrInfo} qrInfo={qrInfo} />
+              <Color
+                editQrInfo={editQrInfo}
+                qrInfo={qrInfo}
+                handleRoute={handleRoute}
+              />
             )}
             {navigate?.isLogo && (
-              <Logo editQrInfo={editQrInfo} qrInfo={qrInfo} />
+              <Logo
+                editQrInfo={editQrInfo}
+                qrInfo={qrInfo}
+                handleRoute={handleRoute}
+              />
             )}
             {navigate?.isCustom && (
-              <Custom editQrInfo={editQrInfo} qrInfo={qrInfo} />
+              <Custom
+                editQrInfo={editQrInfo}
+                qrInfo={qrInfo}
+                handleRoute={handleRoute}
+              />
             )}
           </div>
 

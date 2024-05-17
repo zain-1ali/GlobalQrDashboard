@@ -7,8 +7,9 @@ interface SetCustomProps {
   ) => void;
   // swapForColors: () => void;
   // swapIColors: () => void;
-  // handleRoute: (route: string) => void;
+  handleRoute: (route: string) => void;
   qrInfo: {
+    name: string;
     value: string;
     forColor: string;
     iColor: string;
@@ -22,7 +23,11 @@ interface SetCustomProps {
   };
 }
 
-const Custom: React.FC<SetCustomProps> = ({ editQrInfo, qrInfo }) => {
+const Custom: React.FC<SetCustomProps> = ({
+  editQrInfo,
+  qrInfo,
+  handleRoute,
+}) => {
   console.log(qrInfo);
 
   return (
@@ -79,12 +84,15 @@ const Custom: React.FC<SetCustomProps> = ({ editQrInfo, qrInfo }) => {
           </div>
         </div>
         <div className="flex gap-2  justify-end absolute bottom-0 w-[90%]">
-          <button className="h-[50px] w-[136px] outline-none rounded-[14px] bg-[#E2E2E2] text-[#8B8B8B] font-[600] text-[16px]">
+          <button
+            className="h-[50px] w-[136px] outline-none rounded-[14px] bg-[#E2E2E2] text-[#8B8B8B] font-[600] text-[16px]"
+            onClick={() => handleRoute("logo")}
+          >
             Cancel
           </button>
-          <button className="h-[50px] w-[136px] outline-none rounded-[14px] bg-[#FE5B24] text-[white] font-[600] text-[16px]">
+          {/* <button className="h-[50px] w-[136px] outline-none rounded-[14px] bg-[#FE5B24] text-[white] font-[600] text-[16px]">
             Next
-          </button>
+          </button> */}
         </div>
       </div>
     </div>

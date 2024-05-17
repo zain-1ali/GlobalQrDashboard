@@ -13,6 +13,21 @@ import axios from "axios";
 import { LineChart } from "@mui/x-charts/LineChart";
 import { Menu, MenuItem } from "@mui/material";
 
+interface qrType {
+  name: string;
+  url: string;
+  forColor: string;
+  bgColor: string;
+  eyeColor: string;
+  logo: string;
+  bodyShape: "squares" | "dots" | undefined;
+  eyeShape: string;
+  frameShape: string;
+  status: boolean;
+  totalScans: string;
+  userId: string;
+  _id: string;
+}
 const Analytics = () => {
   const navigate = useNavigate();
   const [scanAnalytics, setScanAnalytics] = useState<number[]>([]);
@@ -40,6 +55,10 @@ const Analytics = () => {
     __v: 0,
   });
 
+  const [qrs, setQrs] = useState<qrType[]>([]);
+
+  const [analyticstype, setanalyticstype] = useState<string>("All");
+
   const token = localStorage.getItem("gbQrId");
   let baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -53,6 +72,22 @@ const Analytics = () => {
         },
       });
       setAnalytics(response.data?.data);
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  // ---------------------------------------------get qrs api call-------------------------------------
+
+  const getAllQrs = async () => {
+    try {
+      const response = await axios.get(`${baseUrl}/qr/getAll`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setQrs(response.data?.data);
       console.log(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -82,6 +117,7 @@ const Analytics = () => {
 
   useEffect(() => {
     getAnalyticsData();
+    getAllQrs();
   }, []);
 
   console.log(scanAnalytics);
@@ -124,15 +160,36 @@ const Analytics = () => {
               <RiBarChartFill className="text-[34px] text-[#FE5B24]" />
               <p className="font-[600] text-[24px] text-[#FE5B24]">Analytics</p>
             </div>
+            <div className="flex justify-between w-[40%]">
+              <div
+                className="w-[185px] h-[53px] rounded-[12px] shadow-lg flex items-center justify-center gap-2 cursor-pointer"
+                // onClick={() => navigate("/create")}
+              >
+                {/* <IoAddCircleOutline className="text-[#FE5B24] text-[20px]" />
+                <p className="font-[400] text-[16px] text-[#FE5B24] flex items-center">
+                  Create QR Code
+                </p> */}
+                <select
+                  className="w-[90%] h-[95%] outline-none text-[#FE5B24]"
+                  onChange={(e) => setanalyticstype(e.target.value)}
+                  value={analyticstype}
+                >
+                  <option value="All">All</option>
+                  {qrs?.map((elm) => {
+                    return <option value={elm?._id}>{elm?.name}</option>;
+                  })}
+                </select>
+              </div>
 
-            <div
-              className="w-[185px] h-[53px] rounded-[12px] shadow-lg flex items-center justify-center gap-2 cursor-pointer"
-              onClick={() => navigate("/create")}
-            >
-              <IoAddCircleOutline className="text-[#FE5B24] text-[20px]" />
-              <p className="font-[400] text-[16px] text-[#FE5B24] flex items-center">
-                Create QR Code
-              </p>
+              <div
+                className="w-[185px] h-[53px] rounded-[12px] shadow-lg flex items-center justify-center gap-2 cursor-pointer"
+                onClick={() => navigate("/create")}
+              >
+                <IoAddCircleOutline className="text-[#FE5B24] text-[20px]" />
+                <p className="font-[400] text-[16px] text-[#FE5B24] flex items-center">
+                  Create QR Code
+                </p>
+              </div>
             </div>
           </div>
 
@@ -236,7 +293,8 @@ const Analytics = () => {
                     </Menu>
                   </>
                 </div>
-                {scanAnalytics?.length > 0 && (
+
+                {scanAnalytics?.length > 0 ? (
                   <LineChart
                     xAxis={[
                       {
@@ -262,6 +320,8 @@ const Analytics = () => {
                     width={750}
                     height={330}
                   />
+                ) : (
+                  <div className="h-[300px] "></div>
                 )}
               </div>
             </div>

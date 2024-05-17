@@ -76,7 +76,7 @@ const InputContainer: React.FC<SetProps> = ({ isLogin }) => {
         className=" w-[400px]  flex flex-col justify-between items-center mb-4"
         style={{ height: window.innerHeight < 700 ? "85%" : "75%" }}
       >
-        <img src={logo} alt="" className="w-[160px] h-[61px] object-cover" />
+        <img src={logo} alt="" className="w-[200px] h-[90px] object-cover" />
         <div>
           <h2 className="font-[500] text-[32px] text-center">Welcome!</h2>
           <p className="font-[400] text-[18px] text-[#848484] text-center">

@@ -3,7 +3,7 @@ import Sidebar from "../components/Sidebar";
 import { RiFileHistoryFill } from "react-icons/ri";
 import { CiFilter } from "react-icons/ci";
 import { IoIosArrowDown } from "react-icons/io";
-import { Checkbox, Menu, MenuItem } from "@mui/material";
+import { Menu, MenuItem } from "@mui/material";
 import { QRCode } from "react-qrcode-logo";
 import { TbUnlink } from "react-icons/tb";
 import { HiArrowNarrowRight } from "react-icons/hi";
@@ -16,6 +16,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 interface qrType {
+  name: string;
   url: string;
   forColor: string;
   bgColor: string;
@@ -34,6 +35,16 @@ const History = () => {
 
   const [qrs, setQrs] = useState<qrType[]>([]);
 
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleClickListItem = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   const token = localStorage.getItem("gbQrId");
   let baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -48,6 +59,27 @@ const History = () => {
       });
       setQrs(response.data?.data);
       console.log(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  // ---------------------------------------------delete call-------------------------------------
+
+  const deleteQr = async (id: string) => {
+    try {
+      const response = await axios.post(
+        `${baseUrl}/qr/delete`,
+        { qrId: id },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setQrs(response.data?.data);
+      console.log(response.data);
+      handleClose();
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -75,15 +107,7 @@ const History = () => {
     }
   };
 
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-
-  const handleClickListItem = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  console.log(qrs);
 
   return (
     <div className="w-[100%] h-[100vh] flex justify-between z-10">
@@ -100,14 +124,14 @@ const History = () => {
                 </p>
               </div>
             </div>
-            <div className="w-[50%]  flex justify-around">
-              <div className="w-[130px] h-[53px] rounded-[12px] shadow-lg flex items-center justify-center  cursor-pointer">
+            <div className="w-[35%]  flex justify-around">
+              {/* <div className="w-[130px] h-[53px] rounded-[12px] shadow-lg flex items-center justify-center  cursor-pointer">
                 <Checkbox defaultChecked color="warning" />
 
                 <p className="font-[400] text-[16px] text-[#909090] flex items-center mr-[10px]">
                   Select All
                 </p>
-              </div>
+              </div> */}
 
               <div className="w-[130px] h-[53px] rounded-[12px] shadow-lg flex items-center justify-center gap-[5px] cursor-pointer">
                 <CiFilter className="text-[#FE5B24] text-[20px]" />
@@ -149,7 +173,7 @@ const History = () => {
                       </div>
                     )}
                   </div>
-                  <Checkbox defaultChecked color="warning" size="large" />
+                  {/* <Checkbox defaultChecked color="warning" size="large" /> */}
 
                   <QRCode
                     // id="qrCodeContainer"
@@ -178,14 +202,18 @@ const History = () => {
                     ]}
                     size={110}
                   />
-
-                  <div className="flex gap-2 items-center">
-                    <TbUnlink className="text-[20px] text-[#9F9F9F] " />
-                    <p className="font-[400] text-[14px] text-[#9F9F9F] w-[230px]">
-                      {qr?.url?.length < 30
-                        ? qr?.url
-                        : qr?.url.slice(0, 30) + "..."}
+                  <div className="flex flex-col justify-between h-[70px]">
+                    <p className="text-[#FE5B24] font-[400] text-[16px] ">
+                      {qr?.name}
                     </p>
+                    <div className="flex gap-2 items-center">
+                      <TbUnlink className="text-[20px] text-[#9F9F9F] " />
+                      <p className="font-[400] text-[14px] text-[#9F9F9F] w-[230px]">
+                        {qr?.url?.length < 30
+                          ? qr?.url
+                          : qr?.url.slice(0, 30) + "..."}
+                      </p>
+                    </div>
                   </div>
 
                   <div className=" flex flex-col  justify-evenly h-[120px] w-[110px]">
@@ -213,7 +241,7 @@ const History = () => {
                     </div>
                   </div>
 
-                  <div className="h-[100%] flex justify-center items-center ">
+                  <div className="h-[100%] flex justify-center items-center">
                     <button
                       id="lang-button"
                       aria-haspopup="listbox"
@@ -246,7 +274,7 @@ const History = () => {
                     </MenuItem>
                     <MenuItem
                       onClick={() => {
-                        // handleGetValue("monthly");
+                        deleteQr(qr?._id);
                       }}
                       sx={{ display: "flex" }}
                     >

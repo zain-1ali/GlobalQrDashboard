@@ -12,7 +12,7 @@ const Sidebar = () => {
     <div className="h-[100%] w-[22%] border-r shadow relative">
       <div className="w-[100%] flex justify-center mt-5">
         <div className="w-[75%]">
-          <img src={logo} alt="" className="w-[186px] h-[68px]" />
+          <img src={logo} alt="" className="w-[205px] h-[75px] object-cover" />
         </div>
       </div>
 

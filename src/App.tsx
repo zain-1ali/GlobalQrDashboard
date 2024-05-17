@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import "./App.css";
+import Loading from "./components/Loading";
 
 let Analytics = lazy(() => import("./pages/Analytics"));
 let History = lazy(() => import("./pages/History"));
@@ -12,7 +13,7 @@ function App() {
   return (
     <>
       {" "}
-      <Suspense>
+      <Suspense fallback={<Loading />}>
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Analytics />} />

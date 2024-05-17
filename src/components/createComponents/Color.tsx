@@ -5,8 +5,9 @@ interface SetColorProps {
   ) => void;
   // swapForColors: () => void;
   // swapIColors: () => void;
-  // handleRoute: (route: string) => void;
+  handleRoute: (route: string) => void;
   qrInfo: {
+    name: string;
     value: string;
     forColor: string;
     iColor: string;
@@ -20,7 +21,11 @@ interface SetColorProps {
   };
 }
 
-const Color: React.FC<SetColorProps> = ({ editQrInfo, qrInfo }) => {
+const Color: React.FC<SetColorProps> = ({
+  editQrInfo,
+  qrInfo,
+  handleRoute,
+}) => {
   return (
     <div className="w-[100%] h-[95%] flex flex-col items-center relative">
       <h2 className="font-[600] text-[40px] text-[#FE5B24]">Set Colors</h2>
@@ -108,10 +113,16 @@ const Color: React.FC<SetColorProps> = ({ editQrInfo, qrInfo }) => {
       </div>
 
       <div className="flex gap-2  justify-end absolute bottom-0 w-[90%]">
-        <button className="h-[50px] w-[136px] outline-none rounded-[14px] bg-[#E2E2E2] text-[#8B8B8B] font-[600] text-[16px]">
+        <button
+          className="h-[50px] w-[136px] outline-none rounded-[14px] bg-[#E2E2E2] text-[#8B8B8B] font-[600] text-[16px]"
+          onClick={() => handleRoute("content")}
+        >
           Cancel
         </button>
-        <button className="h-[50px] w-[136px] outline-none rounded-[14px] bg-[#FE5B24] text-[white] font-[600] text-[16px]">
+        <button
+          className="h-[50px] w-[136px] outline-none rounded-[14px] bg-[#FE5B24] text-[white] font-[600] text-[16px]"
+          onClick={() => handleRoute("logo")}
+        >
           Next
         </button>
       </div>
